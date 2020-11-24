@@ -1,0 +1,23 @@
+{
+  "name": "remon-devguide-quickstart",
+  "version": "14.15.1",
+  "description": "chatserver",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vinylrich/remon-devguide-quickstart.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vinylrich/remon-devguide-quickstart/issues"
+  },
+  "homepage": "https://github.com/vinylrich/remon-devguide-quickstart#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^3.0.3"
+  }
+}

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700,900" rel="stylesheet"></head>
+<style>
+    *{
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    }
+    .wrapper{
+    width: 100%;
+    height: 540px;
+    margin: 100px 0;
+    text-align: center;
+    background-color: #f1f1f1;
+    overflow: hidden;
+    }
+    a:link{
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    }
+    a:visited{
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    }
+    a:hover{
+    color: orange;
+    font-weight: bold;
+    text-decoration: none;
+    }
+    .one{
+    display: inline-block;
+    width:560px;
+    padding-top: 20px;
+    box-sizing: border-box;
+    }
+    textarea{
+    border: 0;
+    }
+    .one input[type='submit']{
+    vertical-align: top;
+    border: 0;
+    height: 66px;
+    width: 156px;
+    background-color: #000;
+    color: #fff;
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 3px;
+    }
+    .two{
+    display: inline-block;
+    width: 180px;
+    vertical-align: top;
+    padding-top: 20px;
+    box-sizing: border-box;
+    }
+    .count{
+    display: inline-block;
+    width: 180px;
+    height: 40px;
+    background-color: #fff;
+    font-size: 7pt;
+    font-weight: 700;
+    line-height: 40px;
+    }
+    .two textarea{
+    margin-top: 5px;
+    }
+    .blank{
+    display: inline-block;
+    width: 180px;
+    height: 63px;
+    background-color: #fff;
+    font-size: 7pt;
+    font-weight: 700;
+    line-height: 65px;
+    }
+    .nickname{
+    text-align: center;
+    width:174px;
+    }
+    textarea{
+    resize: none;
+    }
+    #list{
+    background-color: #fff;
+    height:445PX;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    }
+    ul{
+    list-style: none;
+    }
+    #chatLog{
+    background-color: #fff;
+    width:560px;
+    height:384px;
+    text-align: left;
+    }
+    #message{
+    width:400px;
+    height:66px;
+    }
+    .menu{
+    text-align: left;
+    }
+</style>
+    <body>
+        <div class="wrapper">
+            <section class="one">
+                <pre class="menu"><a href="/index">T A L K</a>  |  <a href="#" onclick="javascript:self.close();">닫기</a></pre>
+                <form id="chat">
+                    <pre id="chatLog" style="overflow:auto;" readonly></pre>
+                    <textarea id="message" rows="4" cols="53" autofocus></textarea>
+                    <input type="submit" id="sendButton" value="SEND">
+                </form>
+            </section>
+            <section class="two">
+                <input type="text" id="nickname" class="nickname" size="25" readonly>
+                <div id="list">
+                </div>
+            </section>
+        </div>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+        <script type="text/javascript">
+            var socket = io();
+            $('#chatLog').html('채팅에 참여하셨습니다<br>');
+            socket.on('enter the user', function(nknm){
+                $('#nickname').val(nknm);
+            });
+            $('#chat').on('submit', function(e){
+                var msgObj = new Object();
+                msgObj.msg = $('#message').val();
+                msgObj.nknm = $('#nickname').val();
+                socket.emit('send message', msgObj);
+                $('#message').val('');
+                $('#message').focus();
+                e.preventDefault();
+            });
+            socket.on('receive message', function(msgObj){
+                $('#chatLog').append(msgObj.nknm + ' : ' + msgObj.msg +"<br>");
+                $("#chatLog").scrollTop($("#chatLog")[0].scrollHeight);
+            });
+        </script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#message").keypress(function(event){
+                    if(event.which == '13'){
+                        if(!event.shiftKey){
+                            event.preventDefault();
+                            $("#sendButton").click();
+	                    }
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
