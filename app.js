@@ -14,11 +14,11 @@ app.get('/index', function(req, res){
 });
 
 app.get('/junwoo', function(req, res){
-    nknm = "room1";
+    nknm = "junwoo";
     res.sendFile(path.join(__dirname, 'views', 'room.html'));
 });
 app.get('/junsang', function(req, res){
-    nknm = "room2";
+    nknm = "junsang";
     res.sendFile(path.join(__dirname, 'views', 'room.html'));
 });
 
