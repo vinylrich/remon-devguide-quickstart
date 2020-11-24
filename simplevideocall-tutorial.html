@@ -1,86 +1,93 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>리모트몬스터 단순 통화 앱</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
 
-  <body>
-    <main>
-      <div class="container">
-        <video
-          id="remoteVideo"
-          class="remoteVideo"
-          autoplay
-          playsinline
-        ></video>
-        <video
-          id="localVideo"
-          class="localVideo"
-          muted
-          autoplay
-          playsinline
-        ></video>
-        <div class="buttonWrapper">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>리모트몬스터 단순 통화 앱</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main>
+    <div class="container">
+      <div class="row">
+        <div id="you" class="col-12 col-sm-6 col-md-6">
+          <h2>상대방</h2>
+          <video id="remoteVideo" class="remoteVideo" autoplay playsinline></video>
+        </div>
+        <div id="me" class="col-12 col-sm-6 col-md-6">
+          <h2>나</h2>
+          <video id="localVideo" class="localVideo" muted autoplay playsinline></video>
+        </div>
+      </div>
+      <div class="row">
+        <div id="controlLeft" class="col-6 col-sm-6 col-md-6">
           <button id="startCall">시작</button>
+        </div>
+        <div id="controlRight" class="col-6 col-sm-6 col-md-6">
           <button id="stopCall">종료</button>
         </div>
       </div>
-    </main>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+      <div class="row">
+        <div class="col-12 col-sm-12 col-md-12">
+          <div id="channelId"></div>
+          <div id="channelState"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@remotemonster/sdk/remon.min.js"></script>
-    <script>
-      let remonCall;
+  <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@remotemonster/sdk/remon.min.js"></script>
+  <script>
+    let remonCall;
+    
+    const config = {
+      credential: {
+        serviceId: '0dfd270b-a0fa-4751-8d37-33624e8bd669',
+        key: '1d186de51ddaf032b19d9aaebdf4cabce8a62af97cc07d36e835fb2cd5a89c98'
+      },
+      view: {
+        remote: '#remoteVideo',
+        local: '#localVideo'
+      }
+    }
 
-      const config = {
-        credential: {
-          serviceId: "0dfd270b-a0fa-4751-8d37-33624e8bd669",
-          key:
-            "1d186de51ddaf032b19d9aaebdf4cabce8a62af97cc07d36e835fb2cd5a89c98",
-        },
-        view: {
-          remote: "#remoteVideo",
-          local: "#localVideo",
-        },
-      };
-
-      const listener = {
-        onConnect(chid) {
-          $("#channelId").text(chid);
-          $("#channelState").text("대기 중");
-          console.log(`onConnect: ${chid}`);
-        },
-        onComplete() {
-          $("#channelState").text("통화 중");
-          console.log(`onComplete`);
-        },
-        onClose() {
-          $("#channelState").text("통화 종료");
-          console.log(`onClose`);
-          remonCall.close();
-          if ($("#localVideo")[0].srcObject) {
-            $("#localVideo")[0].srcObject = undefined;
-          }
-          remonCall = new Remon({ config: config, listener: listener });
-        },
-      };
-
-      remonCall = new Remon({ config: config, listener: listener });
-
-      $("#startCall").click(function () {
-        // connectCall의 인자는 통화채널의 ID입니다. 실제 서비스에서는 동일한 통화채널의 ID가 아닌, 고유하고 예측이 어려운 ID를 사용해야합니다.
-        remonCall.connectCall("my-first-channel");
-      });
-
-      // "종료" 버튼을 클릭하면 통화채널에서 나갑니다.
-      $("#stopCall").click(function () {
+    const listener = {
+      onConnect(chid) {
+        $('#channelId').text(chid);
+        $('#channelState').text("대기 중");
+        console.log(`onConnect: ${chid}`);
+      },
+      onComplete() {
+        $('#channelState').text("통화 중");
+        console.log(`onComplete`);
+      },
+      onClose() {
+        $('#channelState').text("통화 종료");
+        console.log(`onClose`);
         remonCall.close();
-      });
-    </script>
-  </body>
+        if($('#localVideo')[0].srcObject){ $('#localVideo')[0].srcObject=undefined; }
+        remonCall = new Remon({config: config, listener: listener});
+      }
+    }
+
+    remonCall = new Remon({config: config, listener: listener});
+
+    $('#startCall').click(function() {
+      // connectCall의 인자는 통화채널의 ID입니다. 실제 서비스에서는 동일한 통화채널의 ID가 아닌, 고유하고 예측이 어려운 ID를 사용해야합니다.
+      remonCall.connectCall('my-first-channel');
+    });
+
+    // "종료" 버튼을 클릭하면 통화채널에서 나갑니다.
+    $('#stopCall').click(function() {
+      remonCall.close();
+    });
+  </script>
+</body>
+
 </html>
